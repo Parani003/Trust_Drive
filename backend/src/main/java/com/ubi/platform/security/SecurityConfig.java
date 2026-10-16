@@ -99,9 +99,11 @@ public class SecurityConfig {
                     "/api/v1/auth/csrf",
                     "/api/v1/health",
                     "/api/v1/info",
-                    "/actuator/**"
+                    "/actuator/**",
+                    "/h2-console/**"
                 )
             )
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
@@ -139,6 +141,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/auth/logout").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/auth/csrf", "/api/v1/health", "/api/v1/info", "/actuator/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/pricing/configuration").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
 
                 // Insurer-only fleet underwriting dashboard endpoints
                 .requestMatchers("/api/v1/dashboard/insurer/**").hasRole("INSURER")
